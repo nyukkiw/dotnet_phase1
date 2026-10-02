@@ -1,36 +1,47 @@
-// Kategori.cs
 
-// Menyimpan Nama kategori dan daftar barang.
-// Daftar barang harus private. Dari luar tidak boleh ada kategori.Daftar.Clear() atau .Add() langsung.
-// Method yang wajib ada:
 
-// Tambah(Barang)	Id yang sudah ada tidak boleh masuk diam-diam. Pilih sendiri: tolak (return bool) atau lempar exception, lalu jelaskan alasannya.
-// CariByNama(string)	Tidak sensitif huruf besar/kecil, pakai LINQ. Bisa partial match (contains).
-// Hapus(int id)	Putuskan apa yang dikembalikan kalau Id tidak ketemu.
-// TotalNilaiStok()	Harga * Stok dijumlahkan dengan LINQ Sum.
-// Semua()	Untuk menampilkan daftar. Jangan mengembalikan List aslinya. Cari tahu IReadOnlyList atau IEnumerable dan kenapa itu penting.
-// Tidak ada Console.WriteLine di dalam Kategori.
-
-class Kategori
+public class Kategori
 {
-    private string nama 
+    public string Nama{get;}
+    private readonly List<Barang> _daftarBarang = new();
+    public Kategori(string nama)
     {
-        get;
-        set;
+        this.Nama = nama;
     }
-    private List<int> daftarBarang
-    {
-        get;
-        set;   
-    }
-
     
-
-    public void tambah()
+    
+    public bool Tambah(Barang barang)
     {
-        
+        if (_daftarBarang.Any(x => x.Id == barang.Id))
+        {
+            return false;
+        }
+
+        _daftarBarang.Add(barang);
+        return true;
+    }
+    public IEnumerable<Barang> CariByNama(string kataKunci)
+    {
+        if (string.IsNullOrWhiteSpace(kataKunci))
+        {
+            return SemuaBarang();
+        }
+
+        return _daftarBarang.Where(b => b.Nama.Contains(kataKunci, StringComparison.OrdinalIgnoreCase));
+    }
+
+    public bool Hapus(int target) => _daftarBarang.RemoveAll(x => x.Id == target) > 0;
+
+
+    public decimal TotalNilaiStok()
+    {
+
+        return _daftarBarang.Sum(x => x.Stok * x.Harga);
     }
 
 
-
+    public IReadOnlyList<Barang> SemuaBarang()
+    {
+        return _daftarBarang.AsReadOnly();
+    }
 }
