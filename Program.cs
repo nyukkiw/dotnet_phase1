@@ -1,10 +1,11 @@
 ﻿using System.Globalization;
 namespace Inventaris;
+
 class Program
 {
     static void Main(string[] args)
     {
-    
+
         Kategori kategori = new Kategori("Makanan");
 
         bool aplikasiBerjalan = true;
@@ -27,14 +28,14 @@ class Program
             if (!int.TryParse(inputMenu, out int pilihanMenu))
             {
                 Console.WriteLine("Input salah! Silakan masukkan angka 1 sampai 6.");
-                continue; 
+                continue;
             }
 
             Console.WriteLine();
 
             switch (pilihanMenu)
             {
-                case 1: 
+                case 1:
 
                     IEnumerable<Barang> hasil = kategori.SemuaBarang();
                     foreach (var b in hasil)
@@ -43,7 +44,7 @@ class Program
                     }
                     break;
 
-                case 2: 
+                case 2:
                     Console.WriteLine("--- MENU TAMBAH BARANG ---");
                     Console.Write("Masukkan ID Barang (Angka): ");
                     string? inputId = Console.ReadLine();
@@ -52,26 +53,26 @@ class Program
                         Console.WriteLine("ID harus berupa angka positif!");
                         break;
                     }
-                    
+
 
                     Console.Write("Masukkan Nama Barang: ");
                     string? nama = Console.ReadLine();
                     if (string.IsNullOrWhiteSpace(nama))
                     {
                         Console.WriteLine("Nama barang tidak boleh kosong!");
-                        
+
                         break;
                     }
 
                     Console.Write("Masukkan Harga Barang (Rp): ");
                     string? inputHarga = Console.ReadLine();
-                    if (!decimal.TryParse(inputHarga?.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out decimal harga) || harga<=0)
+                    if (!decimal.TryParse(inputHarga?.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out decimal harga) || harga <= 0)
                     {
                         Console.WriteLine("Harga harus berupa angka bulat positif, tanpa titik, koma, atau tanda minus.");
                         break;
                     }
 
-   
+
                     Console.Write("Masukkan Jumlah Stok: ");
                     string? inputStok = Console.ReadLine();
                     if (!int.TryParse(inputStok, out int stok) || stok < 0)
@@ -84,13 +85,13 @@ class Program
                     Console.WriteLine(kategori.Tambah(barangBaru) ? "Berhasil ditambah" : "Gagal menambah");
                     break;
 
-                case 3: 
+                case 3:
                     Console.WriteLine("--- MENU CARI BARANG ---");
                     Console.Write("Masukkan kata kunci nama barang: ");
                     string? kataKunci = Console.ReadLine();
-                    
+
                     IEnumerable<Barang> hasilCari = kategori.CariByNama(kataKunci ?? "");
-                    
+
                     Console.WriteLine("\nHasil Pencarian:");
                     int jumlahKetemu = 0;
                     foreach (var b in hasilCari)
@@ -101,7 +102,7 @@ class Program
                     if (jumlahKetemu == 0) Console.WriteLine("Tidak ada barang yang cocok.");
                     break;
 
-                case 4: 
+                case 4:
                     Console.WriteLine("--- MENU HAPUS BARANG ---");
                     Console.Write("Masukkan ID Barang yang ingin dihapus: ");
                     string? inputIdHapus = Console.ReadLine();
@@ -110,17 +111,17 @@ class Program
                         Console.WriteLine("ID harus berupa angka!");
                         break;
                     }
-                    
+
                     Console.WriteLine(kategori.Hapus(idHapus) ? "Berhasil dihapus" : "Gagal menghapus");
                     break;
 
-                case 5: 
+                case 5:
                     decimal totalAset = kategori.TotalNilaiStok();
                     Console.WriteLine("--- TOTAL ASET TOKO ---");
                     Console.WriteLine($"Total nilai uang dari seluruh stok di gudang: Rp{totalAset}");
                     break;
 
-                case 6: 
+                case 6:
                     Console.WriteLine("Terima kasih telah menggunakan aplikasi inventaris!");
                     aplikasiBerjalan = false;
                     break;

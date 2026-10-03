@@ -1,15 +1,16 @@
 
 namespace Inventaris;
+
 public class Kategori
 {
-    public string Nama{get;}
+    public string Nama { get; }
     private readonly List<Barang> _daftarBarang = new();
     public Kategori(string nama)
     {
         this.Nama = nama;
     }
-    
-    
+
+
     public bool Tambah(Barang barang)
     {
         if (_daftarBarang.Any(x => x.Id == barang.Id))
