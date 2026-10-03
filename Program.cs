@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
+﻿using System.Globalization;
 class Program
 {
     static void Main(string[] args)
     {
     
-        Kategori cath = new Kategori("Makanan");
+        Kategori kategori = new Kategori("Makanan");
 
         bool aplikasiBerjalan = true;
 
@@ -37,10 +35,10 @@ class Program
             {
                 case 1: 
 
-                    IEnumerable<Barang> hasil = cath.SemuaBarang();
+                    IEnumerable<Barang> hasil = kategori.SemuaBarang();
                     foreach (var b in hasil)
                     {
-                        Console.WriteLine($"- [ID: {b.Id}] {b.Nama} | Harga: Rp{b.Harga} | Stok: {b.Stok}");
+                        CetakBarang(b);
                     }
                     break;
 
@@ -48,7 +46,7 @@ class Program
                     Console.WriteLine("--- MENU TAMBAH BARANG ---");
                     Console.Write("Masukkan ID Barang (Angka): ");
                     string? inputId = Console.ReadLine();
-                    if (!int.TryParse(inputId, out int id) || id < 0)
+                    if (!int.TryParse(inputId, out int id) || id <= 0)
                     {
                         Console.WriteLine("ID harus berupa angka positif!");
                         break;
@@ -60,19 +58,15 @@ class Program
                     if (string.IsNullOrWhiteSpace(nama))
                     {
                         Console.WriteLine("Nama barang tidak boleh kosong!");
-                        break;
-                    }
-                    else if (int.TryParse(nama, out _))
-                    {
-                        Console.WriteLine("Input salah! Kamu memasukkan angka murni. Yang diminta adalah nama/teks!");
+                        
                         break;
                     }
 
                     Console.Write("Masukkan Harga Barang (Rp): ");
                     string? inputHarga = Console.ReadLine();
-                    if (!decimal.TryParse(inputHarga?.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out decimal harga))
+                    if (!decimal.TryParse(inputHarga?.Trim(), NumberStyles.None, CultureInfo.InvariantCulture, out decimal harga) || harga<=0)
                     {
-                        Console.WriteLine("Harga harus angka bulat tanpa titik/koma!");
+                        Console.WriteLine("Harga harus berupa angka bulat positif, tanpa titik, koma, atau tanda minus.");
                         break;
                     }
 
@@ -84,9 +78,9 @@ class Program
                         Console.WriteLine("Jumlah stok tidak valid atau bernilai negatif!");
                         break;
                     }
-
+                    nama = nama.Trim();
                     Barang barangBaru = new Barang(id, nama, harga, stok);
-                    Console.WriteLine(cath.Tambah(barangBaru) ? "Berhasil ditambah" : "Gagal menambah");
+                    Console.WriteLine(kategori.Tambah(barangBaru) ? "Berhasil ditambah" : "Gagal menambah");
                     break;
 
                 case 3: 
@@ -94,13 +88,13 @@ class Program
                     Console.Write("Masukkan kata kunci nama barang: ");
                     string? kataKunci = Console.ReadLine();
                     
-                    IEnumerable<Barang> hasilCari = cath.CariByNama(kataKunci ?? "");
+                    IEnumerable<Barang> hasilCari = kategori.CariByNama(kataKunci ?? "");
                     
                     Console.WriteLine("\nHasil Pencarian:");
                     int jumlahKetemu = 0;
                     foreach (var b in hasilCari)
                     {
-                        Console.WriteLine($"- [ID: {b.Id}] {b.Nama} | Harga: Rp{b.Harga} | Stok: {b.Stok}");
+                        CetakBarang(b);
                         jumlahKetemu++;
                     }
                     if (jumlahKetemu == 0) Console.WriteLine("Tidak ada barang yang cocok.");
@@ -116,11 +110,11 @@ class Program
                         break;
                     }
                     
-                    Console.WriteLine(cath.Hapus(idHapus) ? "Berhasil dihapus" : "Gagal menghapus");
+                    Console.WriteLine(kategori.Hapus(idHapus) ? "Berhasil dihapus" : "Gagal menghapus");
                     break;
 
                 case 5: 
-                    decimal totalAset = cath.TotalNilaiStok();
+                    decimal totalAset = kategori.TotalNilaiStok();
                     Console.WriteLine("--- TOTAL ASET TOKO ---");
                     Console.WriteLine($"Total nilai uang dari seluruh stok di gudang: Rp{totalAset}");
                     break;
@@ -136,4 +130,10 @@ class Program
             }
         }
     }
+
+    static void CetakBarang(Barang b)
+    {
+        Console.WriteLine($"- [ID: {b.Id}] {b.Nama} | Harga: Rp{b.Harga} | Stok: {b.Stok}");
+    }
+
 }
