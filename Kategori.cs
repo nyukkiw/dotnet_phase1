@@ -1,5 +1,5 @@
 
-
+namespace Inventaris;
 public class Kategori
 {
     public string Nama{get;}
