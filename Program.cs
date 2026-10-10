@@ -5,8 +5,8 @@ class Program
 {
     static void Main(string[] args)
     {
-
-        Kategori kategori = new Kategori("Makanan");
+        IPenyimpanan penyimpanan = new JsonPenyimpanan("data.json");
+        Kategori kategori = new Kategori("Makanan", penyimpanan);
 
         bool aplikasiBerjalan = true;
 

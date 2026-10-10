@@ -1,12 +1,10 @@
 
-using System.Security.Cryptography.X509Certificates;
-
 namespace Inventaris;
 
 public class Kategori
 {
     public string Nama { get; }
-    private readonly IPenyimpanan _penyimpanan; 
+    private readonly IPenyimpanan _penyimpanan;
     private readonly List<Barang> _daftarBarang;
     public Kategori(string nama, IPenyimpanan penyimpanan)
     {
@@ -25,21 +23,20 @@ public class Kategori
 
         try
         {
-                _daftarBarang.Add(barang);
-                _penyimpanan.Simpan(_daftarBarang);
+            _daftarBarang.Add(barang);
+            _penyimpanan.Simpan(_daftarBarang);
         }
-        catch(Exception)
+        catch (Exception)
         {
 
-            if (barang != null)
-            {
-                _daftarBarang.Remove(barang);                
-            }
-        throw; 
+
+            _daftarBarang.Remove(barang);
+
+            throw;
 
         }
 
-            return true;
+        return true;
     }
     public IEnumerable<Barang> CariByNama(string kataKunci)
     {
@@ -53,23 +50,29 @@ public class Kategori
 
     public bool Hapus(int target)
     {
-        if(_daftarBarang.Any(x => x.Id != target))
+        Barang? cari = _daftarBarang.Find(x => x.Id == target);
+
+        if (cari == null)
         {
             return false;
         }
+        List<Barang> temp = _daftarBarang.ToList();
         try
         {
             _daftarBarang.RemoveAll(x => x.Id == target);
             _penyimpanan.Simpan(_daftarBarang);
         }
-        catch(Exception)
+        catch (Exception)
         {
 
+            _daftarBarang.Clear();
+            _daftarBarang.AddRange(temp);
             throw;
         }
+
         return true;
 
-    } 
+    }
 
 
     public decimal TotalNilaiStok()
