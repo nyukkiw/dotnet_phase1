@@ -6,10 +6,23 @@ class Program
     static void Main(string[] args)
     {
         IPenyimpanan penyimpanan = new JsonPenyimpanan("data.json");
-        Kategori kategori = new Kategori("Makanan", penyimpanan);
+        Kategori kategori;
+        try
+        {
+
+            kategori = new Kategori("Makanan", penyimpanan);
+
+
+        }
+        catch (InvalidDataException ex)
+        {
+            Console.WriteLine($"GAGAL:{ex.Message}");
+            return;
+        }
+
+
 
         bool aplikasiBerjalan = true;
-
         while (aplikasiBerjalan)
         {
             Console.WriteLine("\n=======================================");
@@ -24,12 +37,17 @@ class Program
             Console.Write("Pilih menu (1-6): ");
 
             string? inputMenu = Console.ReadLine();
-
+            if (inputMenu is null)
+            {
+                Console.WriteLine("Input tidak boleh null, harap masukkan inputan");
+                break;
+            }
             if (!int.TryParse(inputMenu, out int pilihanMenu))
             {
                 Console.WriteLine("Input salah! Silakan masukkan angka 1 sampai 6.");
                 continue;
             }
+
 
             Console.WriteLine();
 
@@ -81,8 +99,15 @@ class Program
                         break;
                     }
                     nama = nama.Trim();
-                    Barang barangBaru = new Barang(id, nama, harga, stok);
-                    Console.WriteLine(kategori.Tambah(barangBaru) ? "Berhasil ditambah" : "Gagal menambah");
+                    try
+                    {
+                        Barang barangBaru = new Barang(id, nama, harga, stok);
+                        Console.WriteLine(kategori.Tambah(barangBaru) ? "Berhasil ditambah" : "Gagal menambah, ID sudah ada");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Gagal menambahkan : {e.Message}");
+                    }
                     break;
 
                 case 3:
@@ -111,8 +136,14 @@ class Program
                         Console.WriteLine("ID harus berupa angka!");
                         break;
                     }
-
-                    Console.WriteLine(kategori.Hapus(idHapus) ? "Berhasil dihapus" : "Gagal menghapus");
+                    try
+                    {
+                        Console.WriteLine(kategori.Hapus(idHapus) ? "Berhasil dihapus" : "Gagal menghapus, ID tidak ditemukan");
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"gagal menghapus :{e.Message}");
+                    }
                     break;
 
                 case 5:
